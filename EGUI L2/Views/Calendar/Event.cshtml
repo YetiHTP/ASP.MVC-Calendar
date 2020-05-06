@@ -1,0 +1,133 @@
+﻿@model EventViewModel
+
+@{
+    ViewData["Title"] = "Event";
+}
+
+@functions{
+    public object GetDateDay()
+    {
+        int year;
+        int month;
+        int day;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        if (!int.TryParse(Context.Request.Query["day"].ToString(), out day))
+        {
+            day = DateTime.Now.Day;
+        }
+
+        return new
+        {
+            year,
+            month,
+            day
+        };
+    }
+
+    public object GetEventRoute()
+    {
+        int year;
+        int month;
+        int day;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        if (!int.TryParse(Context.Request.Query["day"].ToString(), out day))
+        {
+            day = DateTime.Now.Day;
+        }
+        var id = Context.Request.Query["id"].ToString();
+
+        return new
+        {
+            year,
+            month,
+            day,
+            id
+        };
+    }
+}
+
+<style>
+    button {
+        text-align: center;
+        width: 80px;
+    }
+
+    table {
+        
+        width: 100%;
+        
+    }
+
+    th, td {
+        height: 50px;
+        width: 50px;
+        text-align: center;
+    }
+    input{
+        width:300px;
+    }
+    a {
+        color: black;
+    }
+</style>
+
+
+
+
+
+<hr />
+
+@using (Html.BeginForm(Model.edited ? "Edit" : "Add", "Calendar", Model.edited ? GetEventRoute() : GetDateDay(), FormMethod.Post))
+{
+    <table>
+        <tr><th colspan="2" style="text-align:center"><h4>@Model.header</h4> </th></tr>
+        <tr >
+            <td style="width:50px">Time</td>
+            <td>
+                <input type="time" name="time" value="@Model.time.TimeOfDay"  required />
+            </td>
+
+        </tr>
+
+        <tr>
+            <td style="width:50px">Description</td>
+            <td>
+                <input type="text" size="20" name="desc" value="@Model.desc"  required />
+            </td>
+
+        </tr>
+        
+        <tr>
+            <td style="text-align:left">
+                <button>
+                    <a href=@Url.Action("Day", GetDateDay())> Cancel </a>
+                </button>
+            </td>
+            <td style="text-align:right"><input type="submit" value="Save" style="width:80px" /></td>
+
+        </tr>
+    </table>
+
+   
+}
+

@@ -1,0 +1,157 @@
+﻿@model DayViewModel
+
+@{
+    ViewData["Title"] = "Day";
+}
+
+@functions{
+
+    public object GetDate()
+    {
+        int year;
+        int month;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        return new
+        {
+            year,
+            month
+        };
+    }
+
+    public object GetDateDay()
+    {
+        int year;
+        int month;
+        int day;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        if (!int.TryParse(Context.Request.Query["day"].ToString(), out day))
+        {
+            day = DateTime.Now.Day;
+        }
+
+        return new
+        {
+            year,
+            month,
+            day
+        };
+    }
+
+    public object GetEvent(Guid id)
+    {
+        int year;
+        int month;
+        int day;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        if (!int.TryParse(Context.Request.Query["day"].ToString(), out day))
+        {
+            day = DateTime.Now.Day;
+        }
+
+        return new
+        {
+            year,
+            month,
+            day,
+            id
+        };
+    }
+}
+
+<style>
+    button{
+        text-align:center;
+        width:80px;
+    }
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        height: 50px;
+        width: 50px;
+        text-align: center;
+    }
+    a {
+        color: black;
+    }
+</style>
+
+
+<hr />
+<table>
+    <tr><th colspan="4"><h4>@Model.header</h4> </th></tr>
+
+    @if (Model.events.Any())
+    {
+        <tr>
+            <th>Time</th>
+            <th>Description</th>
+
+        </tr>
+
+        @foreach (var e in Model.events)
+        {
+            <tr>
+
+                <td>@(e.time.ToString(@"HH\:mm"))  </td>
+                <td>@(e.desc)</td>
+                <td style="text-align:right"><button><a href=@Url.Action("Event", GetEvent(e.id))> Edit </a></button></td>
+                @using (Html.BeginForm("Delete", "Calendar", GetEvent(e.id), FormMethod.Post))
+                {
+                    <td><input style="width:80px" type="submit" value="Delete" /></td>
+                }
+            </tr>
+        }
+    }
+    else
+    {
+        <tr><th colspan="4">No events for this day</th></tr>
+    }
+
+    <tr>
+        <td colspan="2" style="text-align:left">
+            <button>
+                <a href=@Url.Action("Calendar", GetDate())> Back </a>
+
+            </button>
+        </td>
+        <td colspan="2" style="text-align:right">
+            <button>
+                <a href=@Url.Action("Event", GetDateDay())> Add new</a>
+            </button>
+        </td>
+    </tr>
+
+</table>
+

@@ -1,0 +1,167 @@
+﻿@model CalendarViewModel
+
+@{
+    ViewData["Title"] = "Calendar";
+}
+
+@functions{
+    public object PrevMonth()
+    {
+        int year;
+        int month;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+
+
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        month--;
+
+        if (month <= 0)
+        {
+            year--;
+            month = 12;
+        }
+
+        return new
+        {
+            year,
+            month
+        };
+    }
+
+    public object NextMonth()
+    {
+
+        int year;
+        int month;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+
+        month++;
+
+        if (month >= 12)
+        {
+            year++;
+            month = 1;
+        }
+
+        return new
+        {
+            year,
+            month
+        };
+    }
+
+    public object Day(int day)
+    {
+        int year;
+        int month;
+
+        if (!int.TryParse(Context.Request.Query["year"].ToString(), out year))
+        {
+            year = DateTime.Now.Year;
+        }
+
+        if (!int.TryParse(Context.Request.Query["month"].ToString(), out month))
+        {
+            month = DateTime.Now.Month;
+        }
+        return new
+        {
+            year,
+            month,
+            day
+        };
+    }
+}
+
+
+
+    <style>
+
+        table {
+            width: 100%;
+            
+        }
+
+        th, td {
+            height: 50px;
+            width:50px;
+            text-align:center;
+            
+        }
+        a{
+            color:black;
+        }
+    </style>
+
+<hr />
+
+    <table   border="1">
+
+
+        <tr style="background-color:darkcyan">
+            <th colspan="2"><a href=@Url.Action("Calendar", PrevMonth())><<</a></th>
+            <th colspan="3">@Model.header</th>
+            <th colspan="2"  ><a href=@Url.Action("Calendar", NextMonth())>>></a></th>
+        </tr>
+
+
+        <tr style="background-color:darkcyan">
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+        </tr>
+
+        @for (int i = 0; i < 6; i++)
+        {
+            <tr>
+                @for (int j = 0; j < 7; j++)
+                {
+                    int id = i * 7 + j + 2;
+                    int day = id - Model.shift;
+                    if (day > 0 && day <= Model.days_in_month)
+                    {
+                        <td style=@(Model.highlight_days.Contains(day) ? "background-color:LightBlue " : "")>
+                            <a href=@Url.Action("Day", Day(day))>
+                                @if (day == Model.curr_day)
+                                {
+                                    <strong>@day</strong>
+                                }
+                                else
+                                {
+                                    @day
+                                }
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td> </td>
+                    }
+
+                }
+            </tr>
+        }
+    </table>
